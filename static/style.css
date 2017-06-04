@@ -28,14 +28,14 @@ header {
 #sidebar {
     float: right;
     top: 80px;
-    width: 23%;
+    width: 25%;
     position: sticky;
     position: -webkit-sticky;
 }
 
 #content {
     width: 70%;
-    margin-right: 7%;
+    margin-right: 5%;
 }
 
 #text-meta { 
@@ -44,4 +44,9 @@ header {
     border-radius: 2px;
     box-shadow: 1px 1px 3px 0px rgba(0,0,0,0.7);
     padding: 20px;
+}
+
+#text-meta>p {
+    margin: 0;
+    padding: 5px;
 }

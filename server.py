@@ -1,7 +1,7 @@
 import os
+import frontmatter
 
 from flask import Flask, render_template
-from io_utils import read_text
 from textmaker import MarkovMaker
 
 DEBUG = not int(os.environ.get("NO_DEBUG", 0))
@@ -10,7 +10,8 @@ PORT = int(os.environ.get("PORT", 5001))
 app = Flask(__name__)
 
 generator = MarkovMaker()
-generator.train("texts/trump.txt")
+training_filepath = os.sep.join(["texts", "trump.txt"])
+generator.train(training_filepath)
 
 
 @app.route("/")
@@ -23,7 +24,9 @@ def text_maker():
 @app.route("/texts/<path:filename>")
 def show_text(filename):
     """Display a raw training text"""
-    return read_text(filename)
+    filepath = os.sep.join(["texts", filename])
+    file = frontmatter.load(filepath)
+    return file.content
 
 
 if __name__ == '__main__':

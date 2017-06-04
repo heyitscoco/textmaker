@@ -1,3 +1,7 @@
+---
+wordsmith: President Donald Trump
+description: A collection of speeches from Donald Trump, including his Inaugural Address, speeches from campaign rallies, and an address to the United States Congress.
+---
 PRESIDENT:  Thank you very much.  Mr. Speaker, Mr. Vice President, members of Congress, the First Lady of the United States — (applause) — and citizens of America:
 
 Tonight, as we mark the conclusion of our celebration of Black History Month, we are reminded of our nation’s path towards civil rights and the work that still remains to be done.  (Applause.)  Recent threats targeting Jewish community centers and vandalism of Jewish cemeteries, as well as last week’s shooting in Kansas City, remind us that while we may be a nation divided on policies, we are a country that stands united in condemning hate and evil in all of its very ugly forms.  (Applause.)

@@ -1,9 +1,13 @@
 import os
 import markov
+import frontmatter
 from abc import abstractmethod
 from dictmerge import dictmerge
 
 class TextMaker():
+
+    def __init__(self):
+        self._meta = dict()
 
     @abstractmethod
     def train(self):
@@ -16,21 +20,14 @@ class TextMaker():
 
 class MarkovMaker(TextMaker):
 
-    def __init__(self):
-        self._meta = dict()
-
-    def train(self, filepath, **src_meta):
-        with open(filepath) as f:
-            text = f.read()
+    def train(self, filepath):
+        file = frontmatter.load(filepath)
         filename = filepath.split(os.sep)[-1]
-        self._meta["source"] = dictmerge({
-            "filename": filename,
-            "length": len(text)
-        }, src_meta)
-        self.chains = markov.make_chains(text)
+        self._meta["source"] = dictmerge(file.metadata, filename=filename)
+        self.chains = markov.make_chains(file.content)
 
     def make_text(self, return_meta=False):
-        if not hasattr(self, "chains"):
+        if not hasattr(self, "chains") or not hasattr(self, "_meta"):
             raise RuntimeError("`train` must be called before `make_text`.")
 
         text = markov.make_text(self.chains)
