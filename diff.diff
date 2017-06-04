@@ -1,0 +1,308 @@
+diff --git a/requirements.txt b/requirements.txt
+new file mode 100644
+index 0000000..6aee249
+--- /dev/null
++++ b/requirements.txt
+@@ -0,0 +1,6 @@
++click==6.7
++Flask==0.12.2
++itsdangerous==0.24
++Jinja2==2.9.6
++MarkupSafe==1.0
++Werkzeug==0.12.2
+diff --git a/markov-chains/further_study.py b/markov-chains/further_study.py
+deleted file mode 100644
+index 05c5b78..0000000
+--- a/markov-chains/further_study.py
++++ /dev/null
+@@ -1,112 +0,0 @@
+-import sys
+-from random import choice
+-
+-
+-def open_and_read_file(filepath):
+-    """Takes file path as string; returns text as string.
+-
+-    Takes a string that is a file path, opens the file, and turns
+-    the file's contents as one string of text.
+-    """
+-
+-    text = ""
+-    for file in filepath:
+-        text_file = open(file)
+-        text = text + text_file.read()
+-        text_file.close()
+-
+-    return text
+-
+-
+-def make_chains(text_string, n):
+-    """Takes input text as string; returns dictionary of markov chains.
+-
+-    A chain will be a key that consists of a tuple of (word1, word2)
+-    and the value would be a list of the word(s) that follow those two
+-    words in the input text.
+-
+-    For example:
+-
+-        >>> chains = make_chains("hi there mary hi there juanita")
+-
+-    Each bigram will be a key in chains:
+-
+-        >>> sorted(chains.keys())
+-        [('hi', 'there'), ('mary', 'hi'), ('there', 'juanita'), ('there', 'mary')]
+-
+-    Each item in chains is a list of all possible following words:
+-
+-        >>> chains[('hi', 'there')]
+-        ['mary', 'juanita']
+-
+-        >>> chains[('there','juanita')]
+-        [None]
+-    """
+-
+-    chains = {}
+-
+-    words = text_string.split()
+-
+-    words.append(None)
+-
+-    for i in range(len(words) - n):
+-        key = tuple(words[i:i + n])
+-        value = words[i + n]
+-
+-        if key not in chains:
+-            chains[key] = []
+-
+-        chains[key].append(value)
+-
+-        # or we could replace the last three lines with:
+-        #    chains.setdefault(key, []).append(value)
+-
+-    return chains
+-
+-
+-def make_text(chains):
+-    """Returns text from chains."""
+-
+-    # to check a value ends in punctuation.
+-    punct = ([".", "?", "!"])
+-
+-    key = choice(chains.keys())
+-    # check if the first character of the first item in the key is uppercase
+-    while not key[0][0].isupper():
+-        key = choice(chains.keys())
+-
+-    words = [key[0], key[1]]
+-    word = choice(chains[key])
+-
+-    while word is not None:
+-        key = (key[1], word)
+-        words.append(word)
+-        # if word ends in punctuation, break out of the loop
+-        if word[-1] in punct:
+-            break
+-        word = choice(chains[key])
+-
+-
+-
+-
+-    return " ".join(words)
+-
+-
+-# Get the filepath from the user through a command line prompt, ex:
+-# python markov.py green-eggs.txt
+-
+-input_path = sys.argv[1:]
+-
+-# This could also say something like:
+-#   input_path = "green-eggs.txt"
+-
+-# Open the file and turn it into one long string
+-input_text = open_and_read_file(input_path)
+-
+-# Get a Markov chain
+-chains = make_chains(input_text, 2)
+-
+-# Produce random text
+-random_text = make_text(chains)
+-
+-print random_text
+diff --git a/markov-chains/gettysburg.txt b/markov-chains/gettysburg.txt
+deleted file mode 100644
+index 15e64e9..0000000
+--- a/markov-chains/gettysburg.txt
++++ /dev/null
+@@ -1,18 +0,0 @@
+-Four score and seven years ago our fathers brought forth on this continent, a new nation,
+-conceived in Liberty, and dedicated to the proposition that all men are created equal.
+-
+-Now we are engaged in a great civil war, testing whether that nation, or any nation so conceived
+-and so dedicated, can long endure. We are met on a great battle-field of that war. We have come
+-to dedicate a portion of that field, as a final resting place for those who here gave their
+-lives that that nation might live. It is altogether fitting and proper that we should do this.
+-
+-But, in a larger sense, we can not dedicate -- we can not consecrate -- we can not hallow --
+-this ground. The brave men, living and dead, who struggled here, have consecrated it, far above
+-our poor power to add or detract. The world will little note, nor long remember what we say
+-here, but it can never forget what they did here. It is for us the living, rather, to be
+-dedicated here to the unfinished work which they who fought here have thus far so nobly advanced.
+-It is rather for us to be here dedicated to the great task remaining before us -- that from
+-these honored dead we take increased devotion to that cause for which they gave the last full
+-measure of devotion -- that we here highly resolve that these dead shall not have died in
+-vain -- that this nation, under God, shall have a new birth of freedom -- and that government
+-of the people, by the people, for the people, shall not perish from the earth.
+\ No newline at end of file
+diff --git a/markov-chains/green-eggs.txt b/markov-chains/green-eggs.txt
+deleted file mode 100644
+index ca8b267..0000000
+--- a/markov-chains/green-eggs.txt
++++ /dev/null
+@@ -1,6 +0,0 @@
+-Would you could you in a house?
+-Would you could you with a mouse?
+-Would you could you in a box?
+-Would you could you with a fox?
+-Would you like green eggs and ham?
+-Would you like them, Sam I am?
+diff --git a/markov-chains/markov.py b/markov-chains/markov.py
+deleted file mode 100644
+index 5c06b29..0000000
+--- a/markov-chains/markov.py
++++ /dev/null
+@@ -1,96 +0,0 @@
+-"""
+-USAGE: `python markov.py gettysburg.txt`
+-"""
+-
+-import sys
+-import random
+-
+-
+-def open_and_read_file(filepath):
+-    """Takes file path as string; returns text as string.
+-
+-    Takes a string that is a file path, opens the file, and turns
+-    the file's contents as one string of text.
+-    """
+-
+-    with open(filepath) as f:
+-        text = f.read()
+-    return text
+-
+-
+-def make_chains(text_string):
+-    """Takes input text as string; returns dictionary of markov chains.
+-
+-    A chain will be a key that consists of a tuple of (word1, word2)
+-    and the value would be a list of the word(s) that follow those two
+-    words in the input text.
+-
+-    For example:
+-
+-        >>> chains = make_chains("hi there mary hi there juanita")
+-       
+-    Each bigram will be a key in chains:
+-   
+-        >>> sorted(chains.keys())
+-        [('hi', 'there'), ('mary', 'hi'), ('there', 'juanita'), ('there', 'mary')]
+-    
+-    Each item in chains is a list of all possible following words:
+-         
+-        >>> chains[('hi', 'there')]
+-        ['mary', 'juanita']
+-
+-        >>> chains[('there','juanita')]
+-        [None]
+-    """
+-
+-    chains = {}
+-
+-    words = text_string.split()
+-
+-    # To set a stop point, append None to the end of our word list.
+-
+-    words.append(None)
+-
+-    for i in range(len(words) - 2):
+-        key = (words[i], words[i + 1])
+-        value = words[i + 2]
+-
+-        if key not in chains:
+-            chains[key] = []
+-
+-        chains[key].append(value)
+-
+-        # or we could replace the last three lines with:
+-        #    chains.setdefault(key, []).append(value)
+-
+-    return chains
+-
+-
+-def make_text(chains):
+-    """Returns text from chains."""
+-
+-    key = random.choice(list(chains.keys()))
+-    words = [key[0], key[1]]
+-    word = random.choice(chains[key])
+-
+-    #   Keep looping until we reach a value of None
+-    # (which would mean it was the end of our original text)
+-    # Note that for long texts (like a full book), this might mean
+-    # it would run for a very long time.
+-
+-    while word is not None:
+-        key = (key[1], word)
+-        words.append(word)
+-        word = random.choice(chains[key])
+-
+-    return " ".join(words)
+-
+-
+-if __name__ == '__main__':
+-    # Read the specified file into a string
+-    input_text = open_and_read_file(sys.argv[1])
+-
+-    # Get a Markov chain & generate random text
+-    chains = make_chains(input_text)
+-    random_text = make_text(chains)
+-    print(random_text)
+diff --git a/requirements.txt b/requirements.txt
+index 6aee249..eb88f5f 100644
+--- a/requirements.txt
++++ b/requirements.txt
+@@ -1,4 +1,5 @@
+ click==6.7
++dictmerge==0.2.0
+ Flask==0.12.2
+ itsdangerous==0.24
+ Jinja2==2.9.6
+diff --git a/server.py b/server.py
+index 5a03df9..33e1dcd 100644
+--- a/server.py
++++ b/server.py
+@@ -1 +1,22 @@
+-from flask import Flask
++import os
++
++from flask import Flask, render_template
++from textmaker import MarkovMaker
++
++DEBUG = not int(os.environ.get("NO_DEBUG", 0))
++PORT = int(os.environ.get("PORT", 5001))
++
++app = Flask(__name__)
++
++generator = MarkovMaker()
++generator.train("texts/trump.txt")
++
++
++@app.route("/")
++def text_maker():
++    text, meta = generator.make_text(return_meta=True)
++    return render_template("text_maker.html", text=text, meta=meta)
++
++
++if __name__ == '__main__':
++    app.run(debug=DEBUG, host="0.0.0.0", port=PORT)
+ 
