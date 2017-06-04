@@ -13,7 +13,9 @@
 <div id="main">
     <div id="sidebar">
         <div id="text-meta">
-            <b>Training:</b> {{ meta.source.filepath }}
+            {% with filename = meta.source.filename %}
+            Trained on <a href="texts/{{ filename }}">{{ filename }}</a>
+            {% endwith %}
         </div>
     </div>
     <div id="content">

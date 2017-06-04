@@ -1,3 +1,4 @@
+import os
 import markov
 from abc import abstractmethod
 from dictmerge import dictmerge
@@ -21,8 +22,9 @@ class MarkovMaker(TextMaker):
     def train(self, filepath, **src_meta):
         with open(filepath) as f:
             text = f.read()
+        filename = filepath.split(os.sep)[-1]
         self._meta["source"] = dictmerge({
-            "filepath": filepath,
+            "filename": filename,
             "length": len(text)
         }, src_meta)
         self.chains = markov.make_chains(text)
