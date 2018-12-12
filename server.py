@@ -5,7 +5,7 @@ from flask import Flask, render_template
 from textmaker import MarkovMaker
 
 DEBUG = not int(os.environ.get("NO_DEBUG", 0))
-PORT = int(os.environ.get("PORT", 5001))
+PORT = int(os.environ.get("PORT", 5000))
 
 app = Flask(__name__)
 
